@@ -1,0 +1,31 @@
+<?php
+// Id: my_bookmarks.info, 2011/01/10 14:34:45 sheetal Exp $
+
+/*
+ * Implementation of hook_views_api().
+ */
+function my_bookmarks_views_api() {
+  return array(
+    'api' => 2,
+    'path' => drupal_get_path('module', 'my_bookmarks') .'/views',
+  );
+}
+
+ /**
+ * Implementation of hook_views_default_views().
+ *
+ * To add a new view, create a separate .inc file in the views directory.
+ */
+function my_bookmarks_views_default_views() {
+  return lib_views_load_module_default_views('my_bookmarks');
+}
+
+/**
+ * Implementation of hook_flag_default_flags().
+ */
+function my_bookmarks_flag_default_flags() {
+  $flags = array();
+  module_load_include('inc', 'my_bookmarks', 'includes/my_bookmarks.flag_default');
+  _my_bookmarks_page_flags($flags);    
+  return $flags;
+}
