@@ -29,3 +29,35 @@ function my_bookmarks_flag_default_flags() {
   _my_bookmarks_page_flags($flags);    
   return $flags;
 }
+
+/**
+ * Implementation of hook_token_list().
+ */
+function my_bookmarks_token_list($type = 'all') {
+  $tokens = array();
+  if ($type == 'global' || $type == 'all') {
+    $tokens['global']['query-NAME'] = t('The value of the field <em>NAME</em> from the url query string.');
+  }
+  return $tokens;
+}
+
+/**
+ * Implementation of hook_token_values().
+ */
+function my_bookmarks_token_values($type, $object = NULL) {
+  if ($type = 'global') {
+    // Pass along each query string as a token. This is used for default
+    // bookmark titles. Also see http://drupal.org/node/550164.
+    $values = array();
+    $url = parse_url($_SERVER['REQUEST_URI']);
+    $query = $url['query'];
+    if (isset($query) && $query != '') {
+      $output = array();
+      parse_str($query, $output);
+      foreach ($output as $field => $value) {
+        $values['query-' . $field] = $value;
+      }
+      return $values;
+    }
+  }
+}
