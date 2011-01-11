@@ -18,16 +18,20 @@ function _my_bookmarks_page_flags(&$flags) {
     'unflag_long' => 'Remove this page from your bookmarks',
     'unflag_message' => 'This page has been removed from your bookmarks',
     'unflag_denied_text' => '',
-    'link_type' => 'normal',
-    'roles' => array (
-      'flag' => array (
+    'link_type' => 'flag_note_form',
+    'roles' => 
+    array (
+      'flag' => 
+      array (
         0 => 2,
       ),
-      'unflag' => array (
+      'unflag' => 
+      array (
         0 => 2,
       ),
     ),
     'override_page_title' => 0,
+    'module' => 'my_bookmarks',
     'api_version' => 2,
   );
   return $flags;
