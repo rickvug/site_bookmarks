@@ -138,10 +138,3 @@ $handler->display->display_options['fields']['delete_note']['alter']['html'] = 0
 $handler->display->display_options['fields']['delete_note']['hide_empty'] = 0;
 $handler->display->display_options['fields']['delete_note']['empty_zero'] = 0;
 $handler->display->display_options['fields']['delete_note']['text'] = 'Remove';
-
-/* Display: Page */
-$handler = $view->new_display('page', 'Page', 'page_1');
-$handler->display->display_options['path'] = 'bookmarks';
-
-/* Display: Block */
-$handler = $view->new_display('block', 'Block', 'block_1');

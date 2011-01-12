@@ -21,6 +21,36 @@ function my_bookmarks_views_default_views() {
 }
 
 /**
+ * Implementation of hook_block().
+ */
+function my_bookmarks_block($op = 'list', $delta = 0, $edit = array()) {
+  switch ($op) {
+
+    case 'list':
+      $blocks[0]['info'] = t('My bookmarks');
+      return $blocks;
+
+    case 'view':
+      if ($delta == 0) {
+        $block['subject'] = t('My bookmarks');
+        if (!user_is_logged_in()) {
+          // Give anonymous users information about what they are missing.
+	  $content  = '<p><strong>' . t('You must be registered and signed in to save bookmarks to "My workspace".') . '</strong>';
+          $content .= '<br>' . t("This is where your bookmarks will be stored - enabling you to return to any content you have found useful on the site. You can bookmark most pages on the site by clicking on the 'bookmark' link at the top right of pages.");
+          $content .= '<br>' . t('Go to the <a href="@register">Register</a> or <a href="@sign-in">Sign-in</a>.', array('@register' => url('user/register'), '@sign-in' => url('user/login'))) . '</p>';
+
+          $block['content'] = $content;
+        }
+        else {
+          // If an actual user send them the view.
+          $block['content'] = views_embed_view('bookmarks');
+        }
+      }
+      return $block;
+  }
+}
+
+/**
  * Implementation of hook_flag_default_flags().
  */
 function my_bookmarks_flag_default_flags() {
