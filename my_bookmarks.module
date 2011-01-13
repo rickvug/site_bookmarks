@@ -37,7 +37,7 @@ function my_bookmarks_block($op = 'list', $delta = 0, $edit = array()) {
           // Give anonymous users information about what they are missing.
 	  $content  = '<p><strong>' . t('You must be registered and signed in to save bookmarks to "My workspace".') . '</strong>';
           $content .= '<br>' . t("This is where your bookmarks will be stored - enabling you to return to any content you have found useful on the site. You can bookmark most pages on the site by clicking on the 'bookmark' link at the top right of pages.");
-          $content .= '<br>' . t('Go to the <a href="@register">Register</a> or <a href="@sign-in">Sign-in</a>.', array('@register' => url('user/register'), '@sign-in' => url('user/login'))) . '</p>';
+          $content .= '<br>' . t('<a href="@register">Register</a> or <a href="@sign-in">Sign in</a>', array('@register' => url('user/register'), '@sign-in' => url('user/login'))) . '</p>';
 
           $block['content'] = $content;
         }
