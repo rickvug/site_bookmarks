@@ -94,3 +94,62 @@ function my_bookmarks_token_values($type, $object = NULL) {
     }
   }
 }
+
+/**
+ * Implementation of hook_form_alter().
+ * achive Memorable naming bookmarks functionality matching with prototype.
+ */
+function my_bookmarks_form_alter(&$form, &$form_state, $form_id) {
+  if(isset($form_id)) {
+    switch($form_id) {
+      case 'flag_note_form':
+        // change title of page as bookmarking title
+        drupal_set_title('Bookmark '.$_REQUEST['title']);
+        
+        // hide fieldset title - 'flag note'
+        unset($form['flag_note']['#title']);
+        
+        // add descriptive text about bookmarking a page
+        $desc_text = '<p>'.t('You can give this bookmark a memorable name, or use the default suggestion below');
+        $desc_text .= '<br>'.t('When you finish, just click "Save bookmark".').'</p>';
+        $form['note_description'] = array(
+          '#type' => 'markup',
+          '#value' => $desc_text,
+          '#weight' => 0,
+        );
+        
+        // modify input textarea for Memorable bookmark as a textbox
+        $form['flag_note']['note']['#rows'] = 1;
+        
+        // Add Cancel link to go back to previous page
+        $form['cancel'] = array(
+          '#value' => l(t('Cancel'), $_GET['destination']),
+        );
+        
+        // replace caption of submit button 'Bookmark' to 'Save Bookmark'
+        $form['flag_note']['submit']['#value'] = 'Save Bookmark';
+        
+        break;
+        
+      case 'flag_note_edit_form':
+        // change title of page as bookmarking title
+        //$page_title = $_REQUEST['title'];
+        $page_title = $form['note']['#default_value'];
+        drupal_set_title('Change Bookmark for '.$page_title);
+        
+        // add descriptive text about bookmarking a page
+        $desc_text = '<p>'.t('You can change the bookmark title on this page.');
+        $desc_text .= '<br>'.t('When you finish, just click on save changes to return to the previous page.').'</p>';
+        $form['note_description'] = array(
+          '#type' => 'markup',
+          '#value' => $desc_text,
+          '#weight' => 0,
+        );
+        
+        // modify input textarea for Memorable bookmark as a textbox
+        $form['note']['#rows'] = 1;
+        
+        break;
+    }
+  }
+}
