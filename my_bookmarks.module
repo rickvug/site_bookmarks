@@ -137,13 +137,16 @@ function my_bookmarks_form_alter(&$form, &$form_state, $form_id) {
       
       // modify input textarea for Memorable bookmark as a textbox
       $form['note']['#rows'] = 1;
+      
+      // replace caption of submit button 'Bookmark' to 'Save Bookmark'
+      $form['submit']['#value'] = 'Save changes';
     }
     
     // add form element to dispaly descriptive text
     $form['note_description'] = array(
       '#type' => 'markup',
       '#value' => $desc_text,
-      '#weight' => 0,
-    );   
+      '#weight' => -2,
+    );     
   }
 }
