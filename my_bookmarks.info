@@ -1,6 +1,6 @@
 ; Id: my_bookmarks.info, 2011/01/10 14:34:45 sheetal Exp $
 name = My Bookmarks
-description = Provides user to create Bookmarks.
+description = Allows users to bookmark any page on the site, giving each one a unique name.
 package = Custom modules 
 core = 6.x
 dependencies[] = flag
