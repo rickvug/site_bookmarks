@@ -1,6 +1,24 @@
 <?php
 // Id: my_bookmarks.info, 2011/01/10 14:34:45 sheetal Exp $
 
+/**
+ * Implementation of hook_menu().
+ *
+ * @return
+ *   array
+ */
+function my_bookmarks_menu() {
+  $items = array();
+  
+  $items['anonymous-bookmark'] = array(
+    'title' => '',
+    'page callback' => 'anonymous_bookmark_page',
+    'access callback' => TRUE,    
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
 /*
  * Implementation of hook_views_api().
  */
@@ -31,6 +49,11 @@ function my_bookmarks_block($op = 'list', $delta = 0, $edit = array()) {
 				'info' => t('My bookmarks'),
 				'cache' => BLOCK_NO_CACHE,
       );
+      // Block for Anonymous bookmarking
+      $blocks[1] = array(
+				'info' => t('Anonymous Flag Bookmarks'),
+				'cache' => BLOCK_NO_CACHE,
+      );
       return $blocks;
 
     case 'view':
@@ -48,6 +71,18 @@ function my_bookmarks_block($op = 'list', $delta = 0, $edit = array()) {
           // If an actual user send them the view.
           $block['content'] = views_embed_view('bookmarks');
         }
+      }
+      if ($delta == 1) {
+         $block['subject'] = t('Anonymous Flag Bookmarks');
+         if (!user_is_logged_in()) {
+           // get title of current page
+           $bookmark_title = drupal_get_title();
+           // get destination which needs for redirection on login
+           $destination = drupal_get_destination();
+           // block content
+           $content .= '<br>' . t('<a href="@login-to-bookmark&bookmark_title=@bookmark_title?@destination">Bookmark</a>', array('@login-to-bookmark' => url("anonymous-bookmark"), '@destination' => $destination, '@bookmark_title' => $bookmark_title )) . '</p>';
+           $block['content'] = $content;
+         }
       }
       return $block;
   }
@@ -149,4 +184,25 @@ function my_bookmarks_form_alter(&$form, &$form_state, $form_id) {
       '#weight' => -2,
     );     
   }
+}
+
+/**
+ * Implementation of callback function of anonymous bookmark page
+ * Display page content to anonymous user referring to login/Register if wants to bookmark the page.  
+ */
+function anonymous_bookmark_page() {
+  // set title of page with bookmarking page title  
+  $bookmark_title = $_REQUEST['bookmark_title'];
+  drupal_set_title('Bookmark '.$bookmark_title);
+  
+  // get destination to set it, to be get redirected to same bookmarking page on login 
+  $destination = drupal_get_destination();
+  
+  // page content display for anonymous user
+  $content  = '<p><strong>'. t('You must be registered and signed in to save bookmarks to "My workspace".') . '</strong>';
+  $content .= '<br>' . t("This is where your bookmarks will be stored - enabling you to return to any content you have found useful on the site. You can bookmark most pages on the site by clicking on the 'bookmark' link at the top right of pages.");
+  $content .= '<br>' . t('<a href="@register">Register</a> or <a href="@sign-in?@destination">Sign in</a>', array('@register' => url('user/register'), '@sign-in' => url('user/login'), '@destination' => $destination )) . '</p>';
+  $content .= '<p>'. t('<a onclick=history.go(-1)>Cancel and go back</a>') .'</p>';
+  
+  return $content;
 }
