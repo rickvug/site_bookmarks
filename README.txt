@@ -22,12 +22,13 @@ COMPATIBILITY NOTES:
   http://drupal.org/node/1022818.
 * There is a known issue with flag removal not removing the attached note. See
   http://drupal.org/node/1029646 for the issue and patch.
+* Anonymous bookmarking requires a patch to Flag Page found at http://drupal.org/node/1033886.
 * Flag Note patch at http://drupal.org/node/1023204 recommended to see all available token replacement options.
 * Views 3. Views 2.x support is planned.
 
 AUTHORS:
 --------
-Sheetal Yeol
+Sheetal Yeol (drupaltechie)
 Rick Vugteveen (rickvug)
 
 Thank you to Ravi.J, alexpott and gunzip for assistance with patches to support this functionality.
