@@ -9,7 +9,7 @@ function my_bookmarks_menu() {
   
   $items['anonymous-bookmark'] = array(
     'title' => '',
-    'page callback' => 'anonymous_bookmark_page',
+    'page callback' => 'my_bookmarks_anonymous_page',
     'access callback' => 'user_is_anonymous',
     'type' => MENU_CALLBACK,
   );
@@ -69,10 +69,9 @@ function my_bookmarks_block($op = 'list', $delta = 0, $edit = array()) {
 }
 
 /**
- * Implementation of callback function of anonymous bookmark page
- * Display page content to anonymous user referring to login/Register if wants to bookmark the page.  
+ * Menu callback for the anonymous bookmarking login prompt.
  */
-function anonymous_bookmark_page() {
+function my_bookmarks_anonymous_page() {
   // set title of page with bookmarking page title  
   if (isset($_REQUEST['bookmark_title'])) {
     drupal_set_title(t('Bookmark @bookmark-title', array('@bookmark-title' => $_REQUEST['bookmark_title'])));
@@ -87,8 +86,9 @@ function anonymous_bookmark_page() {
   $content  = '<p><strong>'. t('You must be registered and signed in to save bookmarks to "My workspace".') . '</strong>';
   $content .= '<br>' . t("This is where your bookmarks will be stored - enabling you to return to any content you have found useful on the site. You can bookmark most pages on the site by clicking on the 'bookmark' link at the top right of pages.");
   $content .= '<br>' . t('<a href="@register">Register</a> or <a href="@sign-in?@destination">Sign in</a>', array('@register' => url('user/register'), '@sign-in' => url('user/login'), '@destination' => $destination )) . '</p>';
-  $content .= '<p>'. t('<a onclick=history.go(-1)>Cancel and go back</a>') .'</p>';
-  
+  if ($destination) {
+    $content .= '<p>'. t('<a href="@destination">Cancel and go back</a>', array('@destination' => $_REQUEST['destination'])) .'</p>';
+  }  
   return $content;
 }
 
