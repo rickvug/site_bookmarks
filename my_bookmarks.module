@@ -74,9 +74,12 @@ function my_bookmarks_block($op = 'list', $delta = 0, $edit = array()) {
  */
 function anonymous_bookmark_page() {
   // set title of page with bookmarking page title  
-  $bookmark_title = $_REQUEST['bookmark_title'];
-  drupal_set_title('Bookmark '.$bookmark_title);
-  
+  if (isset($_REQUEST['bookmark_title'])) {
+    drupal_set_title(t('Bookmark @bookmark-title', array('@bookmark-title' => $_REQUEST['bookmark_title'])));
+  }
+  else {
+    drupal_set_title(t('Please sign in to use bookmarks'));
+  }
   // get destination to set it, to be get redirected to same bookmarking page on login 
   $destination = drupal_get_destination();
   
