@@ -131,6 +131,26 @@ function my_bookmarks_token_list($type = 'all') {
 }
 
 /**
+ * Implementation of hook_preprocess().
+ */
+function my_bookmarks_preprocess_block(&$variables) {
+  // Print annonymous version of the bookmarking.
+  // @todo - Without sessions api this is not printing. We need to hook into
+  // flag to allow annonymous flagging without the sessions api dependency.
+  if ($variables['block']->delta == 'flag_bookmark' && !user_is_logged_in()) {
+    
+    // get title of current page
+    $bookmark_title = drupal_get_title();
+    // get destination which needs for redirection on login
+    $destination = drupal_get_destination();
+    // block content
+    $content = t('<a href="@login-to-bookmark&bookmark_title=@bookmark_title?@destination">Bookmark</a>', array('@login-to-bookmark' => url("anonymous-bookmark"), '@destination' => $destination, '@bookmark_title' => $bookmark_title ));
+    
+    $variables['block']->content = $content;
+  }
+}
+
+/**
  * Implementation of hook_token_values().
  */
 function my_bookmarks_token_values($type, $object = NULL) {
