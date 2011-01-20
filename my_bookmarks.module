@@ -3,9 +3,6 @@
 
 /**
  * Implementation of hook_menu().
- *
- * @return
- *   array
  */
 function my_bookmarks_menu() {
   $items = array();
@@ -13,7 +10,7 @@ function my_bookmarks_menu() {
   $items['anonymous-bookmark'] = array(
     'title' => '',
     'page callback' => 'anonymous_bookmark_page',
-    'access callback' => TRUE,    
+    'access callback' => 'user_is_anonymous',
     'type' => MENU_CALLBACK,
   );
   return $items;
@@ -49,11 +46,6 @@ function my_bookmarks_block($op = 'list', $delta = 0, $edit = array()) {
 				'info' => t('My bookmarks'),
 				'cache' => BLOCK_NO_CACHE,
       );
-      // Block for Anonymous bookmarking
-      $blocks[1] = array(
-				'info' => t('Anonymous Flag Bookmarks'),
-				'cache' => BLOCK_NO_CACHE,
-      );
       return $blocks;
 
     case 'view':
@@ -71,18 +63,6 @@ function my_bookmarks_block($op = 'list', $delta = 0, $edit = array()) {
           // If an actual user send them the view.
           $block['content'] = views_embed_view('bookmarks');
         }
-      }
-      if ($delta == 1) {
-         $block['subject'] = t('Anonymous Flag Bookmarks');
-         if (!user_is_logged_in()) {
-           // get title of current page
-           $bookmark_title = drupal_get_title();
-           // get destination which needs for redirection on login
-           $destination = drupal_get_destination();
-           // block content
-           $content = t('<a href="@login-to-bookmark&bookmark_title=@bookmark_title?@destination">Bookmark</a>', array('@login-to-bookmark' => url("anonymous-bookmark"), '@destination' => $destination, '@bookmark_title' => $bookmark_title ));
-           $block['content'] = $content;
-         }
       }
       return $block;
   }
@@ -131,22 +111,27 @@ function my_bookmarks_token_list($type = 'all') {
 }
 
 /**
+ * Implementation of hook_flag_access().
+ */
+function my_bookmarks_flag_access($flag, $content_id, $action, $account) {
+  // Override access to the bookmarking flag so that the flagging block still
+  // appears. Then override the content in my_bookmarks_preprocess_block.
+  // This functionality depends on a patch to block display in flag_page.
+  // @todo It would me nice to move this access code over to flag_anon.
+  // However this is not possible due to http://drupal.org/node/1033726.
+  if ($flag->content_type == 'page' && $flag->name == 'flag_bookmark' && $action == 'flag') {
+    return TRUE;
+  }
+}
+
+/**
  * Implementation of hook_preprocess().
  */
 function my_bookmarks_preprocess_block(&$variables) {
-  // Print annonymous version of the bookmarking.
-  // @todo - Without sessions api this is not printing. We need to hook into
-  // flag to allow annonymous flagging without the sessions api dependency.
+  // Override bookmarking block when anonymous to print our own link.
+  // @todo In the future it would be great to move this over to flag_anon.
   if ($variables['block']->delta == 'flag_bookmark' && !user_is_logged_in()) {
-    
-    // get title of current page
-    $bookmark_title = drupal_get_title();
-    // get destination which needs for redirection on login
-    $destination = drupal_get_destination();
-    // block content
-    $content = t('<a href="@login-to-bookmark&bookmark_title=@bookmark_title?@destination">Bookmark</a>', array('@login-to-bookmark' => url("anonymous-bookmark"), '@destination' => $destination, '@bookmark_title' => $bookmark_title ));
-    
-    $variables['block']->content = $content;
+    $variables['block']->content = t('<a href="@login-to-bookmark&bookmark_title=@bookmark_title?@destination">Bookmark</a>', array('@login-to-bookmark' => url("anonymous-bookmark"), '@destination' => drupal_get_destination(), '@bookmark_title' => drupal_get_title()));
   }
 }
 
