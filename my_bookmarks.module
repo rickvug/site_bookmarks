@@ -173,14 +173,6 @@ function my_bookmarks_token_values($type, $object = NULL) {
  * Implementation of hook_form_alter().
  */ 
 function my_bookmarks_form_alter(&$form, &$form_state, $form_id) {
-  // Change bookmark deletion confirmation page title and message.
-  if (($form_id == 'flag_note_delete_confirm') && (_my_bookmarks_is_bookmark($form['fnid']['#value']))) {
-    // Set a better title than "Are you sure you want to delete this note".
-    drupal_set_title(t("Are you sure you want to delete this bookmark ?"));
-    // Use our own submit handler for different deletion messages.
-    $form['#submit'][0] = 'my_bookmarks_flag_note_delete_confirm_submit';      
-  }
-
   // Saving new bookmarks.
   if (($form_id == 'flag_note_form') && ($form['flag_note']['flag_name']['#value'] == 'flag_bookmark')) {
     // change title of page as bookmarking title
@@ -213,6 +205,14 @@ function my_bookmarks_form_alter(&$form, &$form_state, $form_id) {
     $form['flag_note']['note']['#type'] = 'textfield';
     // Replace caption of submit button from 'Bookmark' to 'Save Bookmark'
     $form['flag_note']['submit']['#value'] = 'Save Changes';
+  }
+  
+  // Bookmark deletion confirmation.
+  if (($form_id == 'flag_note_delete_confirm') && (_my_bookmarks_is_bookmark($form['fnid']['#value']))) {
+    // Set a better title than "Are you sure you want to delete this note".
+    drupal_set_title(t("Are you sure you want to delete this bookmark ?"));
+    // Use our own submit handler for different deletion messages.
+    $form['#submit'][0] = 'my_bookmarks_flag_note_delete_confirm_submit';      
   }
 }
 
