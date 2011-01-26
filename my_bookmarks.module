@@ -1,5 +1,4 @@
 <?php
-// Id: my_bookmarks.info, 2011/01/10 14:34:45 sheetal Exp $
 
 /**
  * Implementation of hook_menu().

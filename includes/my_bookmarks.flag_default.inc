@@ -1,5 +1,4 @@
 <?php
-// $Id: my_bookmarks.flag_default.inc,v 1.1.4.1 2011/01/11 15:48:39 sheetal Exp $
 
 function _my_bookmarks_page_flags(&$flags) {
   $flags = array();
