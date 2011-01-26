@@ -171,7 +171,6 @@ function my_bookmarks_token_values($type, $object = NULL) {
 
 /**
  * Implementation of hook_form_alter().
- * achive Memorable naming bookmarks functionality matching with prototype.
  */ 
 function my_bookmarks_form_alter(&$form, &$form_state, $form_id) {
   // Change bookmark deletion confirmation page title and message.
@@ -186,48 +185,42 @@ function my_bookmarks_form_alter(&$form, &$form_state, $form_id) {
       $form['#submit'][0] = 'my_bookmarks_flag_note_delete_confirm_submit';      
     }
   }
-  if(isset($form_id) && ( ($form_id == 'flag_note_form') || ($form_id == 'flag_note_edit_form') )) {   
-    // form to flag a page as bookmark with memorable name in first attempt
-    if($form_id == 'flag_note_form') {
-      // change title of page as bookmarking title
-      drupal_set_title('Bookmark '.$_REQUEST['title']);
-      
-      // hide fieldset title - 'flag note'
-      unset($form['flag_note']['#title']);
-      
-      // add descriptive text about bookmarking a page
-      $desc_text = '<p>'.t('You can give this bookmark a memorable name, or use the default suggestion below');
-      $desc_text .= '<br>'.t('When you finish, just click "Save bookmark".').'</p>';
-      
-      // modify input textarea for Memorable bookmark as a textbox
-      $form['flag_note']['note']['#rows'] = 1;
+  
+  // Changes common to saving a new bookmark and editing an existing bookmark.
+  if (($form_id == 'flag_note_form') || ($form_id == 'flag_note_edit_form')) {
+    dpm($form);
+    // Change textarea to textfield
+    $form['flag_note']['note']['#type'] = 'textfield';
+  }
 
-      // replace caption of submit button 'Bookmark' to 'Save Bookmark'
-      $form['flag_note']['submit']['#value'] = 'Save Bookmark';
+  // Saving new bookmarks.
+  if ($form_id == 'flag_note_form') {
+    // change title of page as bookmarking title
+    if ($_REQUEST['title']) {
+      drupal_set_title(t('Bookmark "@title"', array('@title' => $_REQUEST['title'])));
     }
-    
-    // form to change previously flagged as bookmark details
-    if($form_id == 'flag_note_edit_form') {
-      // change title of page as bookmarking title
-      $page_title = $form['note']['#default_value'];
-      drupal_set_title('Change Bookmark for '.$page_title);
-      
-      // add descriptive text about bookmarking a page
-      $desc_text = '<p>'.t('You can change the bookmark title on this page.');
-      $desc_text .= '<br>'.t('When you finish, just click on save changes to return to the previous page.').'</p>';
-      
-      // modify input textarea for Memorable bookmark as a textbox
-      $form['note']['#rows'] = 1;
-      
-      // replace caption of submit button 'Bookmark' to 'Save Bookmark'
-      $form['submit']['#value'] = 'Save changes';
-    }
-    // add form element to dispaly descriptive text
+    // Add friendly help text for saving a new bookmark
     $form['note_description'] = array(
       '#type' => 'markup',
-      '#value' => $desc_text,
+      '#value' => '<p>'.t('You can give this bookmark a memorable name, or use the default suggestion below. When you finish, just click "Save bookmark".').'</p>',
       '#weight' => -2,
-    );     
+    );
+    // Replace caption of submit button from 'Bookmark' to 'Save Bookmark'
+    $form['flag_note']['submit']['#value'] = 'Save Bookmark';
+  }
+
+  // Editing existing bookmarks.
+  if ($form_id == 'flag_note_edit_form') {
+    // Change title of page as bookmarking title
+    drupal_set_title(t('Change Bookmark for "@title"', array('@title' => $form['flag_note']['note']['#default_value'])));
+    // Add friendly help text for editing a bookmark
+    $form['note_description'] = array(
+      '#type' => 'markup',
+      '#value' => '<p>'.t('You can change the bookmark title on this page. When you finish, just click on "Save Changes" to return to the previous page').'</p>',
+      '#weight' => -2,
+    );
+    // Replace caption of submit button from 'Bookmark' to 'Save Bookmark'
+    $form['flag_note']['submit']['#value'] = 'Save Changes';
   }
 }
 
