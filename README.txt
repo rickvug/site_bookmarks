@@ -10,7 +10,6 @@ TODO:
 -----
 * Allow for anonymous flagging link without Sessions API available.
 * Further tweaks to the UI and code refinement.
-* Move to older version of Views 2.x API for backwards compatibility.
 
 COMPATIBILITY NOTES:
 --------------------
