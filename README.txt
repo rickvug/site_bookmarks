@@ -12,7 +12,6 @@ TODO:
 * An install file is needed to set additional variables for Flag Note. Note that
   Flag Note itself may be re-factored so that configuration is properly exportable.
 * Further tweaks to the UI and code refinement.
-* Remove dependency on lib_views so that the module can be shared.
 * Move to older version of Views 2.x API for backwards compatibility.
 
 COMPATIBILITY NOTES:

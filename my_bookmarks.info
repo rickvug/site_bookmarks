@@ -7,5 +7,4 @@ dependencies[] = flag
 dependencies[] = flag_page
 dependencies[] = flag_note
 dependencies[] = views
-dependencies[] = lib_views
 dependencies[] = token

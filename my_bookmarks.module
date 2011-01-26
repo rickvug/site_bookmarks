@@ -28,11 +28,18 @@ function my_bookmarks_views_api() {
 
  /**
  * Implementation of hook_views_default_views().
- *
- * To add a new view, create a separate .inc file in the views directory.
  */
 function my_bookmarks_views_default_views() {
-  return lib_views_load_module_default_views('my_bookmarks');
+  $views = array();
+  
+  // Include all files in the views/ directory ending with .inc
+  $path = drupal_get_path('module', 'my_bookmarks') . '/views';
+  $files = drupal_system_listing('.inc$', $path, 'name', 0);
+  foreach ($files as $file) {
+    include_once "$file->filename";
+    $views[$view->name] = $view;
+  }
+  return $views;
 }
 
 /**
