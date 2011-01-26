@@ -9,8 +9,6 @@ It should be easy to modify and extend.
 TODO:
 -----
 * Allow for anonymous flagging link without Sessions API available.
-* An install file is needed to set additional variables for Flag Note. Note that
-  Flag Note itself may be re-factored so that configuration is properly exportable.
 * Further tweaks to the UI and code refinement.
 * Move to older version of Views 2.x API for backwards compatibility.
 
