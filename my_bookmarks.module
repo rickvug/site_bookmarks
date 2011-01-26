@@ -58,6 +58,10 @@ function my_bookmarks_block($op = 'list', $delta = 0, $edit = array()) {
     case 'view':
       if ($delta == 0) {
         $block['subject'] = t('My bookmarks');
+        // This block would normally be provided by Views but more control is
+        // required if anonymous bookmarking is to be supported. Further work
+        // is needed on an alternate approach. See http://drupal.org/node/1033726
+        // for one such option.
         if (!user_is_logged_in()) {
           // Give anonymous users information about what they are missing.
           $content  = '<p><strong>' . t('You must be registered and signed in to save bookmarks to "My workspace".') . '</strong>';
