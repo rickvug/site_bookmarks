@@ -175,10 +175,17 @@ function my_bookmarks_token_values($type, $object = NULL) {
  * achive Memorable naming bookmarks functionality matching with prototype.
  */ 
 function my_bookmarks_form_alter(&$form, &$form_state, $form_id) {
-  // Change flag note confirm page question title and
+  // Change bookmark deletion confirmation page title and message.
   if ($form_id == 'flag_note_delete_confirm') {
-    drupal_set_title(t("Are you sure you wish to delete this bookmark ?"));
-    $form['#submit'][0] = 'my_bookmarks_flag_note_delete_confirm_submit';
+    // Only touch flags provided by this module.
+    $flag_note = flag_note_get_notes(array('fnid' => $form['fnid']['#value']));
+    $flag = flag_get_flag(NULL, $flag_note['0']['fid']);
+    if ($flag->content_type == 'page' && $flag->name == 'flag_bookmark') {
+      // Set a better title than "Are you sure you want to delete this note".
+      drupal_set_title(t("Are you sure you want to delete this bookmark ?"));
+      // Use our own submit handler for different deletion messages.
+      $form['#submit'][0] = 'my_bookmarks_flag_note_delete_confirm_submit';      
+    }
   }
   if(isset($form_id) && ( ($form_id == 'flag_note_form') || ($form_id == 'flag_note_edit_form') )) {   
     // form to flag a page as bookmark with memorable name in first attempt
@@ -229,18 +236,23 @@ function my_bookmarks_form_alter(&$form, &$form_state, $form_id) {
     );     
   }
 }
+
+/**
+ * Submit handler for confirming deletion of a bookmark.
+ * Copied from flag_note. Only modifications for text changes.
+ */
 function my_bookmarks_flag_note_delete_confirm_submit($form, &$form_state) {
   if ($form_state['values']['confirm']) {
     $flag_note = current(flag_note_get_notes(array('fnid' => $form_state['values']['fnid'])));
     $flag = flag_get_flag(NULL, $flag_note['fid']);
-    if (variable_get('flag_note_delete_unflags_'. $flag->name, FALSE)) {
+    if ($flag->flag_note_delete_unflags) {
       $flag->flag('unflag', $flag_note['content_id'], user_load($flag_note['uid']));
     }
     if (flag_note_remove_notes(array('fnid' => $form_state['values']['fnid']))) {
-      drupal_set_message(t('Your Bookmark has been deleted .'));
+      drupal_set_message(t('Your bookmark has been deleted.'));
     }
     else {
-      drupal_set_message(t('Your Bookmark cannot be deleted.'), 'error');
+      drupal_set_message(t('Your bookmark cannot be deleted.'), 'error');
     }
   }
 }
