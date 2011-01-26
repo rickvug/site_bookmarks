@@ -202,12 +202,7 @@ function my_bookmarks_form_alter(&$form, &$form_state, $form_id) {
       
       // modify input textarea for Memorable bookmark as a textbox
       $form['flag_note']['note']['#rows'] = 1;
-      
-      // Add Cancel link to go back to previous page
-      $form['cancel'] = array(
-        '#value' => l(t('Cancel'), $_GET['destination']),
-      );
-      
+
       // replace caption of submit button 'Bookmark' to 'Save Bookmark'
       $form['flag_note']['submit']['#value'] = 'Save Bookmark';
     }
