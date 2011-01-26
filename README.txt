@@ -20,7 +20,6 @@ COMPATIBILITY NOTES:
 * There is a known issue with flag removal not removing the attached note. See
   http://drupal.org/node/1029646 for the issue and patch.
 * Anonymous bookmarking requires a patch to Flag Page found at http://drupal.org/node/1033886.
-* Views 3. Views 2.x support is planned.
 
 AUTHORS:
 --------
