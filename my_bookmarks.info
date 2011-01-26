@@ -1,6 +1,5 @@
 name = My Bookmarks
 description = Allows users to bookmark any page on the site, giving each one a unique name.
-package = Custom modules 
 core = 6.x
 dependencies[] = flag
 dependencies[] = flag_page
