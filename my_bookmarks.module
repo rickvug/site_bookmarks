@@ -174,23 +174,15 @@ function my_bookmarks_token_values($type, $object = NULL) {
  */ 
 function my_bookmarks_form_alter(&$form, &$form_state, $form_id) {
   // Change bookmark deletion confirmation page title and message.
-  if ($form_id == 'flag_note_delete_confirm') {
-    if (_my_bookmarks_is_bookmark($form['fnid']['#value'])) {
-      // Set a better title than "Are you sure you want to delete this note".
-      drupal_set_title(t("Are you sure you want to delete this bookmark ?"));
-      // Use our own submit handler for different deletion messages.
-      $form['#submit'][0] = 'my_bookmarks_flag_note_delete_confirm_submit';      
-    }
-  }
-  
-  // Changes common to saving a new bookmark and editing an existing bookmark.
-  if (($form_id == 'flag_note_form') || ($form_id == 'flag_note_edit_form')) {
-    // Change textarea to textfield
-    $form['flag_note']['note']['#type'] = 'textfield';
+  if (($form_id == 'flag_note_delete_confirm') && (_my_bookmarks_is_bookmark($form['fnid']['#value']))) {
+    // Set a better title than "Are you sure you want to delete this note".
+    drupal_set_title(t("Are you sure you want to delete this bookmark ?"));
+    // Use our own submit handler for different deletion messages.
+    $form['#submit'][0] = 'my_bookmarks_flag_note_delete_confirm_submit';      
   }
 
   // Saving new bookmarks.
-  if ($form_id == 'flag_note_form') {
+  if (($form_id == 'flag_note_form') && ($form['flag_note']['flag_name']['#value'] == 'flag_bookmark')) {
     // change title of page as bookmarking title
     if ($_REQUEST['title']) {
       drupal_set_title(t('Bookmark "@title"', array('@title' => $_REQUEST['title'])));
@@ -201,12 +193,14 @@ function my_bookmarks_form_alter(&$form, &$form_state, $form_id) {
       '#value' => '<p>'.t('You can give this bookmark a memorable name, or use the default suggestion below. When you finish, just click "Save bookmark".').'</p>',
       '#weight' => -2,
     );
+    // Change textarea to textfield
+    $form['flag_note']['note']['#type'] = 'textfield';
     // Replace caption of submit button from 'Bookmark' to 'Save Bookmark'
     $form['flag_note']['submit']['#value'] = 'Save Bookmark';
   }
 
   // Editing existing bookmarks.
-  if ($form_id == 'flag_note_edit_form') {
+  if (($form_id == 'flag_note_edit_form') && (_my_bookmarks_is_bookmark($form['fnid']['#value']))) {
     // Change title of page as bookmarking title
     drupal_set_title(t('Change Bookmark for "@title"', array('@title' => $form['flag_note']['note']['#default_value'])));
     // Add friendly help text for editing a bookmark
@@ -215,6 +209,8 @@ function my_bookmarks_form_alter(&$form, &$form_state, $form_id) {
       '#value' => '<p>'.t('You can change the bookmark title on this page. When you finish, just click on "Save Changes" to return to the previous page').'</p>',
       '#weight' => -2,
     );
+    // Change textarea to textfield
+    $form['flag_note']['note']['#type'] = 'textfield';
     // Replace caption of submit button from 'Bookmark' to 'Save Bookmark'
     $form['flag_note']['submit']['#value'] = 'Save Changes';
   }
