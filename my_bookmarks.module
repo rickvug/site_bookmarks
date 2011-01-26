@@ -49,8 +49,8 @@ function my_bookmarks_block($op = 'list', $delta = 0, $edit = array()) {
 
     case 'list':
       $blocks[0] = array(
-				'info' => t('My bookmarks'),
-				'cache' => BLOCK_NO_CACHE,
+        'info' => t('My bookmarks'),
+        'cache' => BLOCK_NO_CACHE,
       );
       return $blocks;
 
